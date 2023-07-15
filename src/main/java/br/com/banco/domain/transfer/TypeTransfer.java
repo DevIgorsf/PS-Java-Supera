@@ -6,10 +6,11 @@ import java.util.Map;
 
 public enum TypeTransfer {
 
-    DEPOSIT("deposíto"),
-    ENTRY_TRANSFER("Transferência Entrada"),
-    OUTBOUND_TRANSFER("Transferência Saída"),
-    WITHDRAW("Saque");
+    DEPOSITO("deposíto"),
+    TRANSFERENCIA("Transferência"),
+//    ENTRY_TRANSFER("Transferência Entrada"),
+//    OUTBOUND_TRANSFER("Transferência Saída"),
+    SAQUE("Saque");
     private String description;
 
     TypeTransfer(String description) {
