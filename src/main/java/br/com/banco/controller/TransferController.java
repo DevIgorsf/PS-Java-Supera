@@ -35,8 +35,8 @@ public class TransferController {
         return ResponseEntity.ok().body(transferList);
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<Transfer>> getAllSearch(
+    @PostMapping("/search")
+    public ResponseEntity<Page<Transfer>> getAllSearch(
             @PageableDefault(size = 4, sort = {"transferDate"}) Pageable paginacao,
             @RequestBody TransferSearchForm transferSearchForm) {
         LocalDate dataInicial = transferSearchForm.getTransferStartDate();
@@ -74,6 +74,6 @@ public class TransferController {
         Page<Transfer> page = transferRepository.findAll(spec, pageable);
 
         // Retorne as transferências encontradas
-        return ResponseEntity.ok().body(page.getContent());
+        return ResponseEntity.ok().body(page);
     }
 }
