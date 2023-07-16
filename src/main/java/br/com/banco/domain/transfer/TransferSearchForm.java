@@ -13,4 +13,5 @@ public class TransferSearchForm {
     @JsonFormat(timezone = "yyyy-MM-dd")
     private LocalDate transferEndDate;
     private String transactionOperatorName;
+    private Integer account;
 }

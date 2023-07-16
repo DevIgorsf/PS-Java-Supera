@@ -16,7 +16,6 @@ import java.util.List;
 
 @Service
 public class TransferService {
-
     @Autowired
     private TransferRepository transferRepository;
 
@@ -24,10 +23,13 @@ public class TransferService {
         LocalDate dataInicial = transferSearchForm.getTransferStartDate();
         LocalDate dataFinal = transferSearchForm.getTransferEndDate();
         String nomeOperadorTransacao = transferSearchForm.getTransactionOperatorName();
+        Integer contaId = transferSearchForm.getAccount();
 
         // Crie uma especificação (Specification) para a busca com base nos parâmetros fornecidos
         Specification<Transfer> spec = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
+
+            predicates.add(criteriaBuilder.equal(root.get("account"), contaId));
 
             // Filtre por data inicial, se fornecida
             if (dataInicial != null) {
