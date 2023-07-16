@@ -1,12 +1,13 @@
 package br.com.banco.domain.transfer;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
@@ -19,7 +20,7 @@ public class TransferService {
     @Autowired
     private TransferRepository transferRepository;
 
-    public Page<Transfer> getTransfers(Pageable pageable, TransferSearchForm transferSearchForm) {
+    public TransferListDTO getTransfers(Pageable pageable, TransferSearchForm transferSearchForm) {
         LocalDate dataInicial = transferSearchForm.getTransferStartDate();
         LocalDate dataFinal = transferSearchForm.getTransferEndDate();
         String nomeOperadorTransacao = transferSearchForm.getTransactionOperatorName();
@@ -51,8 +52,24 @@ public class TransferService {
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
 
-        // Realize a busca com base na especificação, página e ordenação
-        Page<Transfer> page = transferRepository.findAll(spec, pageable);
-        return page;
+        // Realize a busca com base na especificação, sem a paginação
+        List<Transfer> transfers = transferRepository.findAll(spec, pageable.getSort());
+
+        // Calcule a soma dos valores da classe Transfer
+        BigDecimal balance = transfers.stream()
+                .map(Transfer::getValue)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Realize a paginação dos resultados
+        int pageSize = pageable.getPageSize();
+        int pageNumber = pageable.getPageNumber();
+
+        int start = pageNumber * pageSize;
+        int end = Math.min((start + pageable.getPageSize()), transfers.size());
+        Page<Transfer> page = new PageImpl<>(transfers.subList(start, end), pageable, transfers.size());
+
+        TransferListDTO transferListDTO = new TransferListDTO(page, balance);
+
+        return transferListDTO;
     }
 }

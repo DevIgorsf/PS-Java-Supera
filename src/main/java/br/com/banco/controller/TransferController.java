@@ -1,8 +1,6 @@
 package br.com.banco.controller;
 
-import br.com.banco.domain.transfer.Transfer;
-import br.com.banco.domain.transfer.TransferSearchForm;
-import br.com.banco.domain.transfer.TransferService;
+import br.com.banco.domain.transfer.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,10 +17,10 @@ public class TransferController {
     @Autowired
     private TransferService transferService;
     @PostMapping("/search")
-    public ResponseEntity<Page<Transfer>> getAllSearch(
+    public ResponseEntity<TransferListDTO> getAllSearch(
             @PageableDefault(size = 4, sort = {"transferDate"}) Pageable pageable,
             @RequestBody TransferSearchForm transferSearchForm) {
-        Page<Transfer> page = transferService.getTransfers(pageable, transferSearchForm);
+        TransferListDTO page = transferService.getTransfers(pageable, transferSearchForm);
 
         // Retorne as transferências encontradas
         return ResponseEntity.ok().body(page);
