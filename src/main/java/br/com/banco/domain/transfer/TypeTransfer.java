@@ -5,11 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum TypeTransfer {
-
     DEPOSITO("deposíto"),
     TRANSFERENCIA("Transferência"),
-//    ENTRY_TRANSFER("Transferência Entrada"),
-//    OUTBOUND_TRANSFER("Transferência Saída"),
     SAQUE("Saque");
     private String description;
 
@@ -31,5 +28,4 @@ public enum TypeTransfer {
     public static TypeTransfer get(String string) {
         return typeTransferMap.get(string);
     }
-
 }

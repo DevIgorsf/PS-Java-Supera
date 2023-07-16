@@ -16,27 +16,20 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Transfer {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(name = "data_transferencia")
     private ZonedDateTime transferDate;
-
     @Column(name = "valor")
     private BigDecimal value;
-
     @Column(name = "tipo")
     @Enumerated(EnumType.STRING)
     private TypeTransfer typeTransfer;
-
     @Column(name = "nome_operador_transacao")
     private String transactionOperatorName;
-
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "conta_id")
     private Account account;
-
 }
