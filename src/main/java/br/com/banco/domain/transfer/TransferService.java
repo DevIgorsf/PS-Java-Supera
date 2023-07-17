@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
-import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -26,25 +24,25 @@ public class TransferService {
         String nomeOperadorTransacao = transferSearchForm.getTransactionOperatorName();
         Integer contaId = transferSearchForm.getAccount();
 
-        // Crie uma especificação (Specification) para a busca com base nos parâmetros fornecidos
+        // Cria uma especificação (Specification) para a busca com base nos parâmetros fornecidos
         Specification<Transfer> spec = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
             predicates.add(criteriaBuilder.equal(root.get("account"), contaId));
 
-            // Filtre por data inicial, se fornecida
+            // Filtra por data inicial, se fornecida
             if (dataInicial != null) {
                 ZonedDateTime startOfDay = dataInicial.atStartOfDay(ZoneOffset.UTC);
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("transferDate"), startOfDay));
             }
 
-            // Filtre por data final, se fornecida
+            // Filtra por data final, se fornecida
             if (dataFinal != null) {
                 ZonedDateTime endOfDay = dataFinal.atTime(LocalTime.MAX).atZone(ZoneOffset.UTC);
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("transferDate"), endOfDay));
             }
 
-            // Filtre por nome do operador de transação, se fornecido
+            // Filtra por nome do operador de transação, se fornecido
             if (nomeOperadorTransacao != null && !nomeOperadorTransacao.isEmpty()) {
                 predicates.add(criteriaBuilder.equal(root.get("transactionOperatorName"), nomeOperadorTransacao));
             }
@@ -52,15 +50,15 @@ public class TransferService {
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
 
-        // Realize a busca com base na especificação, sem a paginação
+        // Realiza a busca com base na especificação, sem a paginação
         List<Transfer> transfers = transferRepository.findAll(spec, pageable.getSort());
 
-        // Calcule a soma dos valores da classe Transfer
+        // Calcula a soma dos valores da classe Transfer
         BigDecimal balance = transfers.stream()
                 .map(Transfer::getValue)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        // Realize a paginação dos resultados
+        // Realiza a paginação dos resultados
         int pageSize = pageable.getPageSize();
         int pageNumber = pageable.getPageNumber();
 

@@ -16,7 +16,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/conta")
 public class AccountController {
-
     @Autowired
     private AccountRepository accountRepository;
 
@@ -37,6 +36,7 @@ public class AccountController {
         if(accountOptional.isEmpty()) {
             throw new EntityNotFoundException("Conta não encontrada");
         }
+
         var balance = accountOptional.get().getListTransfer().stream()
                 .map(Transfer::getValue)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);;
